@@ -1,11 +1,16 @@
-// Create web swerver 
-const express = require('express');
-const router = express.Router();
-
-// Create a route for comments
-router.get('/comments', (req, res) => {
-    res.send('Comments page');
-});
-
-// Export router to make it available to other files
-module.exports = router;
+// Create web swerver
+// Load HTTP module
+var http = require("http");
+// File system
+var fs = require("fs");
+// Create server
+http.createServer(function(request, response) {
+	// Send the HTTP header
+	// HTTP Status: 200 : OK
+	// Content Type: text/plain
+	response.writeHead(200, {"Content-Type": "text/plain"});
+	// Send the response body as "Hello World"
+	response.end("Hello World\n");
+}).listen(8001);
+// Console will print the message
+console.log("Server running at http://
