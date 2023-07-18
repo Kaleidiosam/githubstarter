@@ -1,24 +1,38 @@
-// Create web swerver
-// 1. npm init
-// 2. npm install express
-// 3. node comments.js
-// 4. http://localhost:3000/comments
-// 5. http://localhost:3000/comments/1
+// Create web server
+// Created by: Fredrik Lautrup
+// Last edit: 05.11.2013 by Fredrik Lautrup
 
-const express = require('express')
-const app = express()
-const port = 3000
+var express = require('express');
+var router = express.Router();
+var db = require('../db');
 
-// http://localhost:3000/comments
-app.get('/comments', (req, res) => {
-    res.send('Comments')
-})
+/* GET comments listing. */
+router.get('/', function(req, res) {
+    res.send('respond with a resource');
+});
 
-// http://localhost:3000/comments/1
-app.get('/comments/:id', (req, res) => {
-    res.send('Comments ' + req.params.id)
-})
+// POST a comment
+router.post('/', function(req, res) {
+    // Get the comment from the request
+    var comment = req.body.comment;
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-})
+    // Get the id of the user that is posting the comment
+    var user_id = req.session.user_id;
+
+    // Get the id of the post that the comment is posted on
+    var post_id = req.body.post_id;
+
+    // Insert the comment into the database
+    db.query("INSERT INTO comments (comment, user_id, post_id) VALUES (?, ?, ?)", [comment, user_id, post_id], function(err, result) {
+        // If there is an error, send the error to the user
+        if(err) {
+            console.log(err);
+            res.send({error: "There was an error posting the comment"});
+        } else {
+            // Send a response to the user
+            res.send({success: "Comment posted"});
+        }
+    });
+});
+
+module.exports = router;
